@@ -11,7 +11,8 @@
 
 <script>
 import { ref } from "vue";
-import { v4 as uuidv4 } from "uuid";
+// import { v4 as uuidv4 } from "uuid";
+import axios from "axios";
 import TodoItem from "./TodoItem";
 import AddTodo from "./AddTodo";
 
@@ -22,23 +23,19 @@ export default {
     AddTodo,
   },
   setup() {
-    const todos = ref([
-      {
-        id: uuidv4(),
-        title: "Viec 1",
-        completed: true,
-      },
-      {
-        id: uuidv4(),
-        title: "Viec 2",
-        completed: false,
-      },
-      {
-        id: uuidv4(),
-        title: "Viec 3",
-        completed: false,
-      },
-    ]);
+    const todos = ref([]);
+
+    const getAllTodos = async () => {
+      try {
+        const res = await axios.get(
+          "https://jsonplaceholder.typicode.com/todos?_limit=5"
+        );
+        todos.value = res.data;
+      } catch (e) {
+        console.log(e);
+      }
+    };
+    getAllTodos();
 
     const markCompleted = (id) => {
       todos.value = todos.value.map((todo) => {
@@ -49,14 +46,24 @@ export default {
       });
     };
 
-    const handleDeleteItem = (id) => {
-      todos.value = todos.value.filter((todo) => {
-        return todo.id !== id;
-      });
+    const handleDeleteItem = async (id) => {
+      try {
+        await axios.delete(`https://jsonplaceholder.typicode.com/todos/${id}`);
+        todos.value = todos.value.filter((todo) => {
+          return todo.id !== id;
+        });
+      } catch (e) {
+        console.log(e);
+      }
     };
 
-    const addItem = (event) => {
-      todos.value = [...todos.value, event];
+    const addItem = async (event) => {
+      try {
+        await axios.post(`https://jsonplaceholder.typicode.com/todos`, event);
+        todos.value = [...todos.value, event];
+      } catch (e) {
+        console.log(e);
+      }
     };
 
     return {

@@ -7,14 +7,14 @@
 
 <script>
 import { ref } from "vue";
-import { v4 as uuidv4 } from "uuid";
+// import { v4 as uuidv4 } from "uuid";
 export default {
   name: "addTodoComponent",
   setup(props, context) {
     const title = ref("");
     const addItem = () => {
       const newItem = {
-        id: uuidv4(),
+        // id: uuidv4(),
         title: title.value,
         completed: false,
       };
